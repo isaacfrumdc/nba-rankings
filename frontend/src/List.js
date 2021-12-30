@@ -1,7 +1,7 @@
 import React from 'react';
 
 const List = ({ list, onSelectItem }) => {
-    // console.log(list)
+    console.log(list)
     return (
         list.map(item => (
             <Item key={item.objectID} item={item} onSelectItem={onSelectItem} />
@@ -13,7 +13,7 @@ const Item = ({ item, onSelectItem }) => (
     <div>
         <span>{item.player_first_name}</span>&nbsp;
         <span>{item.player_last_name}</span>&nbsp;
-        <span>{item.team_name}</span>
+        <span>{item.team_name}</span>&nbsp;
         <span>
             <button type="button" onClick={() => onSelectItem(item)}>
                 Add to Ranking

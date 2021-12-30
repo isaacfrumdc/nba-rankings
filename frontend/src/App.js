@@ -3,30 +3,67 @@ import axios from 'axios';
 import List from './List';
 import SearchForm from './SearchForm';
 
+const playersReducer = (state, action) => {
+    switch (action.type) {
+        case 'PLAYERS_FETCH_INIT':
+            return {
+                ...state,
+                isLoading: true,
+                isError: false,
+            };
+        case 'PLAYERS_FETCH_SUCCESS':
+            return {
+                ...state,
+                isLoading: false,
+                isError: false,
+                data: action.payload,
+            };
+        case 'PLAYERS_FETCH_FAILURE':
+            return {
+                ...state,
+                isLoading: false,
+                isError: true,
+            };
+        default:
+            throw new Error();
+    }
+};
+
 const baseURL = "http://localhost:7000/api/getFromName?name=";
 
 const App = () => {
 
     const [url, setUrl] = React.useState(`${baseURL}`);
     const [searchTerm, setSearchTerm] = React.useState("");
-    const [searchedPlayers, setPlayers] = React.useState([]);
+    const [searchedPlayers, dispatchPlayers] = React.useReducer(
+        playersReducer,
+        { data: [], isLoading: false, isError: false }
+    );
 
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [isError, setIsError] = React.useState(false);
+
+
+    const handleFetchPlayers = React.useCallback(() => {
+        // if (!searchTerm) return;
+
+        dispatchPlayers({ type: 'PLAYERS_FETCH_INIT' });
+
+        axios
+            .get(url)
+            .then((response) => {
+                console.log(response.data);
+                dispatchPlayers({
+                    type: 'PLAYERS_FETCH_SUCCESS',
+                    payload: response.data,
+                });
+            })
+            .catch(() => {
+                dispatchPlayers({ type: 'PLAYERS_FETCH_FAILURE' })
+            });
+    }, [url]);
 
     React.useEffect(() => {
-        setIsLoading(true);
-
-
-        // invalid url will trigger an 404 error
-        axios.get(url).then((response) => {
-            setPlayers(response.data)
-            setIsLoading(false)
-            console.log(url)
-        }).catch(() => {
-            setIsError(true);
-        });
-    }, [url]);
+        handleFetchPlayers();
+    }, [handleFetchPlayers]);
 
     const handleSearchInput = event => {
         setSearchTerm(event.target.value);
@@ -49,11 +86,11 @@ const App = () => {
                 onSearchSubmit={handleSearchSubmit}
             />
 
-            {isError && <p>Something went wrong ...</p>}
+            <hr />
 
-            {url}
+            {searchedPlayers.isError && <p>Something went wrong ...</p>}
 
-            {isLoading ? (<p>Loading ...</p>) : ( <List list={searchedPlayers}/>)}
+            {searchedPlayers.isLoading ? (<p>Loading ...</p>) : (<List list={searchedPlayers.data} />)}
         </div>
     );
 }
