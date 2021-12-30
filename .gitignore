@@ -23,8 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 
-venv/
-.vscode/
+# PYTHON ->
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

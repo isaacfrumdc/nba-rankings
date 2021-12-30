@@ -18,7 +18,7 @@ headers  = {
     'Accept-Language': 'en-US,en;q=0.9',
 }
 
-player_info_url = 'https://stats.nba.com/stats/playerindex?College=&Country=&DraftPick=&DraftRound=&DraftYear=&Height=&Historical=1&LeagueID=00&Season=2021-22&SeasonType=Regular%20Season&TeamID=0&Weight='
+player_info_url = 'https://stats.nba.com/stats/playerindex?College=&Country=&DraftPick=&DraftRound=&DraftYear=&Height=&Historical=0&LeagueID=00&Season=2021-22&SeasonType=Regular%20Season&TeamID=0&Weight='
 response = requests.get(url=player_info_url, headers=headers).json()
 player_info = response['resultSets'][0]['rowSet']
 for row in player_info:
