@@ -1,13 +1,12 @@
 import React from 'react';
 
-const List = ({ list, onSelectItem }) => {
-    console.log(list)
-    return (
+const List = React.memo(
+    ({ list, onSelectItem }) =>
         list.map(item => (
             <Item key={item.objectID} item={item} onSelectItem={onSelectItem} />
         ))
-    )
-}
+);
+
 
 const Item = ({ item, onSelectItem }) => (
     <div>

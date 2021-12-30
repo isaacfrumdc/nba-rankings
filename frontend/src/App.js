@@ -72,7 +72,6 @@ const App = () => {
 
     const handleSearchSubmit = event => {
         setUrl(`${baseURL}${searchTerm}`);
-        console.log(searchedPlayers);
 
         event.preventDefault();
     };
