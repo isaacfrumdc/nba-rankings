@@ -1,19 +1,22 @@
 import React from 'react';
 
-const List = ({ list, onRemoveItem }) =>
-    list.map(item => <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />);
+const List = ({ list, onSelectItem }) => {
+    // console.log(list)
+    return (
+        list.map(item => (
+            <Item key={item.objectID} item={item} onSelectItem={onSelectItem} />
+        ))
+    )
+}
 
-const Item = ({ item, onRemoveItem }) => (
+const Item = ({ item, onSelectItem }) => (
     <div>
+        <span>{item.player_first_name}</span>&nbsp;
+        <span>{item.player_last_name}</span>&nbsp;
+        <span>{item.team_name}</span>
         <span>
-            <a href={item.url}>{item.title}</a>
-        </span>
-        <span>{item.author}</span>
-        <span>{item.num_comments}</span>
-        <span>{item.points}</span>
-        <span>
-            <button type="button" onClick={() => onRemoveItem(item)}>
-                Dismiss
+            <button type="button" onClick={() => onSelectItem(item)}>
+                Add to Ranking
         </button>
         </span>
     </div>

@@ -1,125 +1,61 @@
 import React from 'react';
 import axios from 'axios';
-import SearchForm from './SearchForm';
 import List from './List';
+import SearchForm from './SearchForm';
 
-const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
-
-const useSemiPersistentState = (key, initialState) => {
-  const [value, setValue] = React.useState(
-    localStorage.getItem(key) || initialState
-  );
-
-  React.useEffect(() => {
-    localStorage.setItem(key, value);
-  }, [value, key]);
-
-  return [value, setValue];
-};
-
-const storiesReducer = (state, action) => {
-  switch (action.type) {
-    case 'STORIES_FETCH_INIT':
-      return {
-        ...state,
-        isLoading: true,
-        isError: false,
-      };
-    case 'STORIES_FETCH_SUCCESS':
-      return {
-        ...state,
-        isLoading: false,
-        isError: false,
-        data: action.payload,
-      };
-    case 'STORIES_FETCH_FAILURE':
-      return {
-        ...state,
-        isLoading: false,
-        isError: true,
-      };
-    case 'REMOVE_STORY':
-      return {
-        ...state,
-        data: state.data.filter(
-          story => action.payload.objectID !== story.objectID
-        ),
-      };
-    default:
-      throw new Error();
-  }
-};
+const baseURL = "http://localhost:7000/api/getFromName?name=";
 
 const App = () => {
 
-  const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React');
+    const [url, setUrl] = React.useState(`${baseURL}`);
+    const [searchTerm, setSearchTerm] = React.useState("");
+    const [searchedPlayers, setPlayers] = React.useState([]);
 
-  const [url, setUrl] = React.useState(
-    `${API_ENDPOINT}${searchTerm}`
-  );
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [isError, setIsError] = React.useState(false);
 
-  const [stories, dispatchStories] = React.useReducer(
-    storiesReducer,
-    { data: [], isLoading: false, isError: false }
-  );
+    React.useEffect(() => {
+        setIsLoading(true);
 
-  const handleFetchStories = React.useCallback(async () => {
-    dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    try {
-      const result = await axios.get(url);
+        // invalid url will trigger an 404 error
+        axios.get(url).then((response) => {
+            setPlayers(response.data)
+            setIsLoading(false)
+            console.log(url)
+        }).catch(() => {
+            setIsError(true);
+        });
+    }, [url]);
 
-      dispatchStories({
-        type: 'STORIES_FETCH_SUCCESS',
-        payload: result.data.hits,
-      });
-    } catch {
-      dispatchStories({ type: 'STORIES_FETCH_FAILURE' });
-    }
-  }, [url]); 
+    const handleSearchInput = event => {
+        setSearchTerm(event.target.value);
+        console.log(searchTerm);
+    };
 
-  React.useEffect(() => {
-    handleFetchStories();
-  }, [handleFetchStories]);
+    const handleSearchSubmit = event => {
+        setUrl(`${baseURL}${searchTerm}`);
+        console.log(searchedPlayers);
 
-  const handleRemoveStory = item => {
-    dispatchStories({
-      type: 'REMOVE_STORY',
-      payload: item,
-    });
-  };
+        event.preventDefault();
+    };
 
-  const handleSearchInput = event => {
-    setSearchTerm(event.target.value);
-  };
+    return (
+        <div>
+            <h1>NBA Rankings</h1>
+            <SearchForm
+                searchTerm={searchTerm}
+                onSearchInput={handleSearchInput}
+                onSearchSubmit={handleSearchSubmit}
+            />
 
-  const handleSearchSubmit = event => {
-    setUrl(`${API_ENDPOINT}${searchTerm}`);
+            {isError && <p>Something went wrong ...</p>}
 
-    event.preventDefault();
-  };
+            {url}
 
-  return (
-    <div>
-      <h1>NBA Rankings</h1>
-
-      <SearchForm
-        searchTerm={searchTerm}
-        onSearchInput={handleSearchInput}
-        onSearchSubmit={handleSearchSubmit}
-      />
-
-      <hr />
-
-      {stories.isError && <p>Something went wrong ...</p>}
-      
-      {stories.isLoading ? (
-        <p>Loading ...</p>
-      ) : (
-          <List list={stories.data} onRemoveItem={handleRemoveStory}/>
-        )}
-    </div>
-  );
-};
+            {isLoading ? (<p>Loading ...</p>) : ( <List list={searchedPlayers}/>)}
+        </div>
+    );
+}
 
 export default App;
