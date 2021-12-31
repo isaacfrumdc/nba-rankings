@@ -3,40 +3,7 @@ import axios from 'axios';
 import List from './List';
 import SearchForm from './SearchForm';
 import SORTS from './SORTS';
-
-const playersReducer = (state, action) => {
-    switch (action.type) {
-        case 'PLAYERS_FETCH_INIT':
-            return {
-                ...state,
-                isLoading: true,
-                isError: false,
-            };
-        case 'PLAYERS_FETCH_SUCCESS':
-            return {
-                ...state,
-                isLoading: false,
-                isError: false,
-                data: action.payload,
-            };
-        case 'PLAYERS_FETCH_FAILURE':
-            return {
-                ...state,
-                isLoading: false,
-                isError: true,
-            };
-        case 'SORT_PLAYERS':
-            console.log(action.payload);
-            return {
-                ...state,
-                isLoading: false,
-                isError: false,
-                data: action.payload,
-            };
-        default:
-            throw new Error();
-    }
-};
+import playersReducer from './PlayersReducer'
 
 const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
