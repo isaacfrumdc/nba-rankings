@@ -29,18 +29,17 @@ const playersReducer = (state, action) => {
     }
 };
 
-const baseURL = "http://localhost:7000/api/getFromName?name=";
+const API_BASE = "http://localhost:7000/api/get";
+const API_SEARCH = "/getFromName";
 
 const App = () => {
 
-    const [url, setUrl] = React.useState(`${baseURL}`);
+    const [url, setUrl] = React.useState(`${API_BASE}`);
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchedPlayers, dispatchPlayers] = React.useReducer(
         playersReducer,
         { data: [], isLoading: false, isError: false }
     );
-
-
 
     const handleFetchPlayers = React.useCallback(() => {
         // if (!searchTerm) return;
@@ -71,7 +70,7 @@ const App = () => {
     };
 
     const handleSearchSubmit = event => {
-        setUrl(`${baseURL}${searchTerm}`);
+        setUrl(`${API_BASE}${API_SEARCH}?name=${searchTerm}`);
 
         event.preventDefault();
     };

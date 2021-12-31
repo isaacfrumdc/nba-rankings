@@ -23,7 +23,7 @@ app.get("/api/get", (req, res) => {
 });
 
 // Route to search by name
-app.get("/api/getFromName", (req, res) => {
+app.get("/api/get/getFromName", (req, res) => {
 
     const name = '%' + req.query.name + '%';
     console.log(name);
