@@ -3,12 +3,13 @@ import axios from 'axios';
 import List from './List';
 import SearchForm from './SearchForm';
 import SORTS from './SORTS';
-import playersReducer from './PlayersReducer'
+import playersReducer from './PlayersReducer';
+import RankList from './RankList';
 
 const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
-const API_RANK = "http://localhost:7000/api/rank/";
-let arr10 = new Array();
+//const API_RANK = "http://localhost:7000/api/rank/";
+let arr10 = [];
 
 const App = () => {
 
@@ -16,13 +17,12 @@ const App = () => {
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchedPlayers, dispatchPlayers] = React.useReducer(
         playersReducer,
-        { data: [], isLoading: false, isError: false }
+        { data: [], top10: [], isLoading: false, isError: false }
     );
     const [sort, setSort] = React.useState({
         sortKey: 'NONE',
         isReverse: false
     });
-    const [top10, setTop10] = React.useState([]);
 
     const handleSort = key => {
         const isReverse = sort.sortKey === key && !sort.isReverse;
@@ -40,24 +40,27 @@ const App = () => {
     };
 
     const handleAddPlayer = event => {
-        //console.log(event);
+        console.log("B: Add");
         let newAdd = arr10.push(event);
-        console.log("arr10: " + arr10);
+
+        dispatchPlayers({
+            type: 'ADD_TO_RANKING',
+            payload: arr10,
+        });
     };
 
     const handleRankingSubmit = event => {
-        setTop10(arr10);
+        
         
         event.preventDefault();
     };
 
     React.useEffect(() => {
-        console.log("top10: " + top10);
-        axios.post('http://localhost:7000/api/rank/top10', {
-            user_ID: '1',
-            top10: `${top10}`
-        });
-    }, [top10]);
+        // axios.post('http://localhost:7000/api/rank/top10', {
+        //     user_id: '1',
+        //     top10: `${top10}`
+        // });
+    }, [handleRankingSubmit]);
 
 
     const handleFetchPlayers = React.useCallback(() => {
@@ -98,7 +101,7 @@ const App = () => {
     return (
         <div>
             <h1>NBA Rankings</h1>
-            <RankList list = {top10}/>
+            <RankList list = {searchedPlayers.top10}/>
 
             <button onClick={handleRankingSubmit}>Submit Rankings</button>
 

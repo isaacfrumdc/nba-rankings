@@ -26,6 +26,13 @@ const playersReducer = (state, action) => {
                 isError: false,
                 data: action.payload,
             };
+        case 'ADD_TO_RANKING':
+            return {
+                ...state,
+                isLoading: false,
+                isError: false,
+                top10: action.payload,
+            };
         default:
             throw new Error();
     }
