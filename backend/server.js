@@ -37,4 +37,17 @@ app.get("/api/get/getFromName", (req, res) => {
         });
 });
 
+// Route for adding idea to ranking
+app.post("/api/rank/top10", (req, res) => {
 
+    const userID = req.body.userID;
+    const top10 = req.body.top10;
+    db.query("INSERT INTO top_10 (userID, top10) VALUES (?,?)", 
+        [userID, top10],
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            }
+            console.log(result)
+        });
+});
