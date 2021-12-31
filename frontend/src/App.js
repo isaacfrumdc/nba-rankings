@@ -10,6 +10,7 @@ const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
 //const API_RANK = "http://localhost:7000/api/rank/";
 let arr10 = [];
+let fullError = false;
 
 const App = () => {
 
@@ -17,7 +18,7 @@ const App = () => {
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchedPlayers, dispatchPlayers] = React.useReducer(
         playersReducer,
-        { data: [], top10: [], isLoading: false, isError: false }
+        { data: [], top10: [], isLoading: false, isError: false, fullError }
     );
     const [sort, setSort] = React.useState({
         sortKey: 'NONE',
@@ -41,6 +42,12 @@ const App = () => {
 
     const handleAddPlayer = event => {
         console.log("B: Add");
+        if (arr10.length > 9) {
+            dispatchPlayers({
+                type: 'FULL_RANKING',
+                payload: true,
+            });
+        }
         let newAdd = arr10.push(event);
 
         dispatchPlayers({
@@ -102,6 +109,7 @@ const App = () => {
         <div>
             <h1>NBA Rankings</h1>
             <RankList list = {searchedPlayers.top10}/>
+            {searchedPlayers.fullError && <p>10 players have already been added ...</p>}
 
             <button onClick={handleRankingSubmit}>Submit Rankings</button>
 
@@ -116,7 +124,6 @@ const App = () => {
             <hr />
 
             {searchedPlayers.isError && <p>Something went wrong ...</p>}
-
             {searchedPlayers.isLoading ? (<p>Loading ...</p>) : (<List list={searchedPlayers.data} onAddPlayer={handleAddPlayer} onSort={handleSort}/>)}
         </div>
     );
