@@ -1,7 +1,7 @@
 import React from 'react';
 import Item from './Item';
 
-const List = React.memo(({ list, onAddPlayer, onSort }) => {
+const List = React.memo(({ list, onAddPlayer, onRemovePlayer, onSort }) => {
 
     return (
         <div>
@@ -24,7 +24,7 @@ const List = React.memo(({ list, onAddPlayer, onSort }) => {
             </div>
 
             {list.map(item => (
-                <Item key={item.objectID} item={item} onAddPlayer={onAddPlayer} listType='All'/>
+                <Item key={item.objectID} item={item} onAddPlayer={onAddPlayer} onRemovePlayer={onRemovePlayer} listType='All'/>
             ))}
         </div>
     );

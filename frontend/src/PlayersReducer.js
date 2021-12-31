@@ -26,7 +26,7 @@ const playersReducer = (state, action) => {
                 isError: false,
                 data: action.payload,
             };
-        case 'ADD_TO_RANKING':
+        case 'UPDATE_RANKING':
             return {
                 ...state,
                 isLoading: false,

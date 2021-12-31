@@ -1,7 +1,7 @@
 import React from 'react';
 import Item from './Item';
 
-const RankList = ({ list }) => {
+const RankList = ({ list, onRemovePlayer }) => {
     console.log("B: RankList");
     return (
         <div>
@@ -12,7 +12,7 @@ const RankList = ({ list }) => {
             </div>
 
             {list.map(item => (
-                <Item key={item.objectID} item={item} listType='Rank' />
+                <Item key={item.objectID} item={item} onRemovePlayer={onRemovePlayer} listType='Rank' />
             ))}
         </div>
     );
