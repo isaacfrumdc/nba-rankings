@@ -1,7 +1,7 @@
 import React from 'react';
-import { sortBy } from 'lodash';
+import Item from './Item';
 
-const List = React.memo(({ list, onSelectItem, onSort }) => {
+const List = React.memo(({ list, onAddPlayer, onSort }) => {
 
     return (
         <div>
@@ -24,24 +24,10 @@ const List = React.memo(({ list, onSelectItem, onSort }) => {
             </div>
 
             {list.map(item => (
-                <Item key={item.objectID} item={item} onSelectItem={onSelectItem} />
+                <Item key={item.objectID} item={item} onAddPlayer={onAddPlayer} listType='All'/>
             ))}
         </div>
     );
 });
-
-
-const Item = ({ item, onSelectItem }) => (
-    <div style={{ display: 'flex' }}>
-        <span style={{ width: '40%' }}>{item.player_first_name} {item.player_last_name}</span>&nbsp;
-        <span style={{ width: '30%' }}>{item.team_city} {item.team_name}</span>&nbsp;
-        <span style={{ width: '10%' }}>{item.position}</span>&nbsp;
-        <span>
-            <button type="button" onClick={() => onSelectItem(item)}>
-                Add to Ranking
-        </button>
-        </span>
-    </div>
-);
 
 export default List;
