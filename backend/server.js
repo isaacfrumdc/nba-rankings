@@ -27,7 +27,8 @@ app.get("/api/get/getFromName", (req, res) => {
 
     const name = '%' + req.query.name + '%';
     console.log(name);
-    db.query("SELECT * FROM player_Bios WHERE player_last_name LIKE ? OR player_first_name LIKE ?", [name, name],
+    db.query("SELECT * FROM player_Bios WHERE player_last_name LIKE ? OR player_first_name LIKE ?", 
+        [name, name],
         (err, result) => {
             if (err) {
                 console.log(err)

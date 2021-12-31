@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import List from './List';
 import SearchForm from './SearchForm';
+import { sortBy } from 'lodash';
+
 
 const playersReducer = (state, action) => {
     switch (action.type) {
@@ -24,6 +26,14 @@ const playersReducer = (state, action) => {
                 isLoading: false,
                 isError: true,
             };
+        case 'SORT_PLAYERS':
+            console.log(action.payload);
+            return {
+                ...state,
+                isLoading: false,
+                isError: false,
+                data: action.payload,
+            };
         default:
             throw new Error();
     }
@@ -31,6 +41,13 @@ const playersReducer = (state, action) => {
 
 const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
+
+const SORTS = {
+    NONE: list => list,
+    PLAYER: list => sortBy(list, 'player_last_name'),
+    TEAM: list => sortBy(list, 'team_city'),
+    POSITION: list => sortBy(list, 'position'),
+};
 
 const App = () => {
 
@@ -40,6 +57,36 @@ const App = () => {
         playersReducer,
         { data: [], isLoading: false, isError: false }
     );
+
+
+    const [sort, setSort] = React.useState({
+        sortKey: 'NONE',
+        isReverse: false
+    });
+
+    // React.useEffect(() => {
+    //     handleSort();
+    //     console.log("effect");
+    // }, [sort]);
+
+    const handleSort = key => {
+        const isReverse = sort.sortKey === key && !sort.isReverse;
+        setSort({ sortKey: key, isReverse: isReverse });
+    };
+
+    React.useEffect(() => {
+        const sortFunction = SORTS[sort.sortKey];
+        const sortedList = sort.isReverse
+            ? sortFunction(searchedPlayers.data).reverse()
+            : sortFunction(searchedPlayers.data);
+
+        dispatchPlayers({
+            type: 'SORT_PLAYERS',
+            payload: sortedList,
+        });
+    }, [sort]);
+
+
 
     const handleFetchPlayers = React.useCallback(() => {
         // if (!searchTerm) return;
@@ -88,7 +135,7 @@ const App = () => {
 
             {searchedPlayers.isError && <p>Something went wrong ...</p>}
 
-            {searchedPlayers.isLoading ? (<p>Loading ...</p>) : (<List list={searchedPlayers.data} />)}
+            {searchedPlayers.isLoading ? (<p>Loading ...</p>) : (<List list={searchedPlayers.data} onSort={handleSort}/>)}
         </div>
     );
 }
