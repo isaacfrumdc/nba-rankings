@@ -2,8 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import List from './List';
 import SearchForm from './SearchForm';
-import { sortBy } from 'lodash';
-
+import SORTS from './SORTS';
 
 const playersReducer = (state, action) => {
     switch (action.type) {
@@ -42,13 +41,6 @@ const playersReducer = (state, action) => {
 const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
 
-const SORTS = {
-    NONE: list => list,
-    PLAYER: list => sortBy(list, 'player_last_name'),
-    TEAM: list => sortBy(list, 'team_city'),
-    POSITION: list => sortBy(list, 'position'),
-};
-
 const App = () => {
 
     const [url, setUrl] = React.useState(`${API_BASE}`);
@@ -58,16 +50,10 @@ const App = () => {
         { data: [], isLoading: false, isError: false }
     );
 
-
     const [sort, setSort] = React.useState({
         sortKey: 'NONE',
         isReverse: false
     });
-
-    // React.useEffect(() => {
-    //     handleSort();
-    //     console.log("effect");
-    // }, [sort]);
 
     const handleSort = key => {
         const isReverse = sort.sortKey === key && !sort.isReverse;
@@ -79,14 +65,12 @@ const App = () => {
         const sortedList = sort.isReverse
             ? sortFunction(searchedPlayers.data).reverse()
             : sortFunction(searchedPlayers.data);
-
+    
         dispatchPlayers({
             type: 'SORT_PLAYERS',
             payload: sortedList,
         });
     }, [sort]);
-
-
 
     const handleFetchPlayers = React.useCallback(() => {
         // if (!searchTerm) return;
