@@ -19,10 +19,7 @@ const App = () => {
         playersReducer,
         { data: [], top10: [], isLoading: false, isError: false }
     );
-    const [sort, setSort] = React.useState({
-        sortKey: 'NONE',
-        isReverse: false
-    });
+    const [sort, setSort] = React.useState({ sortKey: 'NONE', isReverse: false });
 
     const handleSort = key => {
         const isReverse = sort.sortKey === key && !sort.isReverse;
@@ -40,26 +37,29 @@ const App = () => {
     };
 
     const handleAddPlayer = event => {
-        console.log("B: Add");
-        if (arr10.length > 9) {
-            return null;
-        }
-        console.log(event.player_slug);
-        let alreadyAdded = false;
-        for (let i = 0; i < arr10.length; i++) {
-            if (arr10[i].player_slug === event.player_slug) {
-                alreadyAdded = true;
-            }
-        }
+        // console.log("B: Add");
+        // if (arr10.length > 9) {
+        //     return null;
+        // }
+        // console.log(event.player_slug);
+        // let alreadyAdded = false;
+        // for (let i = 0; i < arr10.length; i++) {
+        //     if (arr10[i].player_slug === event.player_slug) {
+        //         alreadyAdded = true;
+        //     }
+        // }
 
-        if (!alreadyAdded) {
-            arr10.push(event);
-        }
+        // if (!alreadyAdded) {
+        //     arr10.push(event);
+        // }
 
         dispatchPlayers({
-            type: 'UPDATE_RANKING',
-            payload: arr10,
+            type: 'ADD_TO_RANKING', payload: {
+                list: arr10,
+                player: event
+            }
         });
+        //console.log("top10: "+searchedPlayers.top10);
     };
 
     const handleMoveUp = event => {
@@ -69,10 +69,7 @@ const App = () => {
             let temp = arr10[startPos];
             arr10[startPos] = arr10[startPos - 1]
             arr10[prevPos] = temp;
-            dispatchPlayers({
-                type: 'UPDATE_RANKING',
-                payload: arr10,
-            });
+            dispatchPlayers({ type: 'UPDATE_RANKING', payload: arr10, });
         }
     }
 
@@ -83,10 +80,7 @@ const App = () => {
             let temp = arr10[startPos];
             arr10[startPos] = arr10[startPos + 1]
             arr10[nextPos] = temp;
-            dispatchPlayers({
-                type: 'UPDATE_RANKING',
-                payload: arr10,
-            });
+            dispatchPlayers({ type: 'UPDATE_RANKING', payload: arr10, });
         }
     }
 
@@ -94,10 +88,7 @@ const App = () => {
         let pos = arr10.indexOf(event);
         arr10.splice(pos, 1);
 
-        dispatchPlayers({
-            type: 'UPDATE_RANKING',
-            payload: arr10,
-        });
+        dispatchPlayers({ type: 'UPDATE_RANKING', payload: arr10, });
     }
 
     const handleRankingSubmit = event => {
@@ -136,10 +127,7 @@ const App = () => {
             .get(searchUrl)
             .then((response) => {
                 console.log(response.data);
-                dispatchPlayers({
-                    type: 'PLAYERS_FETCH_SUCCESS',
-                    payload: response.data,
-                });
+                dispatchPlayers({ type: 'PLAYERS_FETCH_SUCCESS', payload: response.data, });
             })
             .catch(() => {
                 dispatchPlayers({ type: 'PLAYERS_FETCH_FAILURE' })
@@ -152,11 +140,7 @@ const App = () => {
             ? sortFunction(searchedPlayers.data).reverse()
             : sortFunction(searchedPlayers.data);
     
-        dispatchPlayers({
-            type: 'SORT_PLAYERS',
-            payload: sortedList,
-        });
-    }, [sort]);
+        dispatchPlayers({ type: 'SORT_PLAYERS', payload: sortedList, }); }, [sort]);
 
     React.useEffect(() => {
         handleFetchPlayers();
@@ -172,11 +156,7 @@ const App = () => {
 
             <hr />
 
-            <SearchForm
-                searchTerm={searchTerm}
-                onSearchInput={handleSearchInput}
-                onSearchSubmit={handleSearchSubmit}
-            />
+            <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit}/>
 
             <hr />
 
