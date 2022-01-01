@@ -43,24 +43,70 @@ const App = () => {
     const handleAddPlayer = event => {
         console.log("B: Add");
         if (arr10.length > 9) {
-            dispatchPlayers({
-                type: 'FULL_RANKING',
-                payload: true,
-            });
+            return null;
         }
-        let newAdd = arr10.push(event);
+        console.log(event.player_slug);
+        let alreadyAdded = false;
+        for (let i = 0; i < arr10.length; i++) {
+            if (arr10[i].player_slug === event.player_slug) {
+                alreadyAdded = true;
+            }
+        }
+
+        if (!alreadyAdded) {
+            arr10.push(event);
+        }
 
         dispatchPlayers({
-            type: 'ADD_TO_RANKING',
+            type: 'UPDATE_RANKING',
             payload: arr10,
         });
     };
+
+    const handleMoveUp = event => {
+        let startPos = arr10.indexOf(event);
+        let prevPos = startPos - 1 ;
+        if (startPos > 0) {
+            let temp = arr10[startPos];
+            arr10[startPos] = arr10[startPos - 1]
+            arr10[prevPos] = temp;
+            dispatchPlayers({
+                type: 'UPDATE_RANKING',
+                payload: arr10,
+            });
+        }
+    }
+
+    const handleMoveDown = event => {
+        let startPos = arr10.indexOf(event);
+        let nextPos = startPos + 1 ;
+        if (startPos < 9) {
+            let temp = arr10[startPos];
+            arr10[startPos] = arr10[startPos + 1]
+            arr10[nextPos] = temp;
+            dispatchPlayers({
+                type: 'UPDATE_RANKING',
+                payload: arr10,
+            });
+        }
+    }
+
+    const handleRemovePlayer = event => {
+        let pos = arr10.indexOf(event);
+        arr10.splice(pos, 1);
+
+        dispatchPlayers({
+            type: 'UPDATE_RANKING',
+            payload: arr10,
+        });
+    }
 
     const handleRankingSubmit = event => {
         
         
         event.preventDefault();
     };
+
 
     React.useEffect(() => {
         // axios.post('http://localhost:7000/api/rank/top10', {
@@ -108,8 +154,8 @@ const App = () => {
     return (
         <div>
             <h1>NBA Rankings</h1>
-            <RankList list = {searchedPlayers.top10}/>
-            {searchedPlayers.fullError && <p>10 players have already been added ...</p>}
+            <RankList list = {searchedPlayers.top10} onRemovePlayer={handleRemovePlayer}
+            onMoveUp={handleMoveUp} onMoveDown={handleMoveDown}/>
 
             <button onClick={handleRankingSubmit}>Submit Rankings</button>
 

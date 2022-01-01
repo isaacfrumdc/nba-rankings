@@ -24,7 +24,7 @@ const List = React.memo(({ list, onAddPlayer, onRemovePlayer, onSort }) => {
             </div>
 
             {list.map(item => (
-                <Item key={item.objectID} item={item} onAddPlayer={onAddPlayer} onRemovePlayer={onRemovePlayer} listType='All'/>
+                <Item key={item.person_id} item={item} onAddPlayer={onAddPlayer} onRemovePlayer={onRemovePlayer} listType='All'/>
             ))}
         </div>
     );
