@@ -41,8 +41,8 @@ app.get("/api/get/getFromName", (req, res) => {
 app.post("/api/rank/top10", (req, res) => {
 
     const userID = req.body.userID;
-    const top10 = req.body.top10;
-    db.query("INSERT INTO top_10 (user_id, top10) VALUES (?,?)", 
+    const top10 = req.body.top10_list;
+    db.query("INSERT INTO top_10 (user_id, top10_list) VALUES (?,?)", 
         [userID, top10],
         (err, result) => {
             if (err) {

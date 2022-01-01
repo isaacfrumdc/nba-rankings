@@ -10,7 +10,6 @@ const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
 //const API_RANK = "http://localhost:7000/api/rank/";
 let arr10 = [];
-let fullError = false;
 
 const App = () => {
 
@@ -18,7 +17,7 @@ const App = () => {
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchedPlayers, dispatchPlayers] = React.useReducer(
         playersReducer,
-        { data: [], top10: [], isLoading: false, isError: false, fullError }
+        { data: [], top10: [], isLoading: false, isError: false }
     );
     const [sort, setSort] = React.useState({
         sortKey: 'NONE',
@@ -102,8 +101,20 @@ const App = () => {
     }
 
     const handleRankingSubmit = event => {
-        
-        
+        if (arr10.length !== 10) {
+            console.log("exit");
+            return;
+        }
+        let submitArr = [];
+        for (let i = 0; i < arr10.length; i++) {
+            submitArr[i] = arr10[i].player_slug;
+        }
+
+        axios.post('http://localhost:7000/api/rank/top10', {
+            user_id: '1',
+            top10_list: JSON.stringify(submitArr),
+        });
+
         event.preventDefault();
     };
 
