@@ -63,6 +63,7 @@ const App = () => {
     };
 
     const handleMoveUp = event => {
+        let arr10 = searchedPlayers.top10;
         let startPos = arr10.indexOf(event);
         let prevPos = startPos - 1 ;
         if (startPos > 0) {
@@ -74,6 +75,7 @@ const App = () => {
     }
 
     const handleMoveDown = event => {
+        let arr10 = searchedPlayers.top10;
         let startPos = arr10.indexOf(event);
         let nextPos = startPos + 1 ;
         if (startPos < 9) {
@@ -85,6 +87,7 @@ const App = () => {
     }
 
     const handleRemovePlayer = event => {
+        let arr10 = searchedPlayers.top10;
         let pos = arr10.indexOf(event);
         arr10.splice(pos, 1);
 
