@@ -1,10 +1,15 @@
 import React from 'react';
 import axios from 'axios';
-import List from './List';
+import AllList from './List';
 import SearchForm from './SearchForm';
 import SORTS from './SORTS';
 import playersReducer from './PlayersReducer';
 import RankList from './RankList';
+import { Container, VStack, Flex, Heading, Text, StackDivider, Spacer, Icon } from '@chakra-ui/react';
+import styles from './App.module.css';
+import { RiNumber1, RiNumber2, RiNumber3, RiNumber4, RiNumber5, RiNumber6, RiNumber7, RiNumber8, RiNumber9, RiNumber0 } from 'react-icons/ri';
+import ConsensusList from './ConsensusList';
+
 
 const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
@@ -21,48 +26,30 @@ const App = () => {
     );
     const [sort, setSort] = React.useState({ sortKey: 'NONE', isReverse: false });
 
-    const handleSort = key => {
+    const handleSort = React.useCallback(key => {
         const isReverse = sort.sortKey === key && !sort.isReverse;
         setSort({ sortKey: key, isReverse: isReverse });
-    };
+    }, []);
 
     const handleSearchInput = event => {
         setSearchTerm(event.target.value);
     };
 
     const handleSearchSubmit = event => {
+        console.log("submit");
         setSearchUrl(`${API_BASE}${API_SEARCH}?name=${searchTerm}`);
 
         event.preventDefault();
     };
 
-    const handleAddPlayer = event => {
-        // console.log("B: Add");
-        // if (arr10.length > 9) {
-        //     return null;
-        // }
-        // console.log(event.player_slug);
-        // let alreadyAdded = false;
-        // for (let i = 0; i < arr10.length; i++) {
-        //     if (arr10[i].player_slug === event.player_slug) {
-        //         alreadyAdded = true;
-        //     }
-        // }
-
-        // if (!alreadyAdded) {
-        //     arr10.push(event);
-        // }
-
+    const handleAddPlayer = React.useCallback(event => {
+        console.log("add");
         dispatchPlayers({
-            type: 'ADD_TO_RANKING', payload: {
-                list: arr10,
-                player: event
-            }
-        });
+            type: 'ADD_TO_RANKING', payload: event, });
         //console.log("top10: "+searchedPlayers.top10);
-    };
+    }, []);
 
-    const handleMoveUp = event => {
+    const handleMoveUp = React.useCallback(event => {
         let arr10 = searchedPlayers.top10;
         let startPos = arr10.indexOf(event);
         let prevPos = startPos - 1 ;
@@ -72,29 +59,30 @@ const App = () => {
             arr10[prevPos] = temp;
             dispatchPlayers({ type: 'UPDATE_RANKING', payload: arr10, });
         }
-    }
+    }, []);
 
-    const handleMoveDown = event => {
+    const handleMoveDown = React.useCallback(event => {
         let arr10 = searchedPlayers.top10;
         let startPos = arr10.indexOf(event);
         let nextPos = startPos + 1 ;
-        if (startPos < 9) {
+        if (startPos < arr10.length - 1) {
             let temp = arr10[startPos];
             arr10[startPos] = arr10[startPos + 1]
             arr10[nextPos] = temp;
             dispatchPlayers({ type: 'UPDATE_RANKING', payload: arr10, });
         }
-    }
+    }, []);
 
-    const handleRemovePlayer = event => {
+    const handleRemovePlayer = React.useCallback(event => {
         let arr10 = searchedPlayers.top10;
         let pos = arr10.indexOf(event);
         arr10.splice(pos, 1);
 
         dispatchPlayers({ type: 'UPDATE_RANKING', payload: arr10, });
-    }
+    }, []);
 
     const handleRankingSubmit = event => {
+        let arr10 = searchedPlayers.top10;
         if (arr10.length !== 10) {
             console.log("exit");
             return;
@@ -109,6 +97,7 @@ const App = () => {
             top10_list: JSON.stringify(submitArr),
         });
 
+        console.log("submit");
         event.preventDefault();
     };
 
@@ -149,23 +138,96 @@ const App = () => {
         handleFetchPlayers();
     }, [handleFetchPlayers]);
 
+    console.log("B: App");
+
     return (
-        <div>
-            <h1>NBA Rankings</h1>
-            <RankList list = {searchedPlayers.top10} onRemovePlayer={handleRemovePlayer}
-            onMoveUp={handleMoveUp} onMoveDown={handleMoveDown}/>
 
-            <button onClick={handleRankingSubmit}>Submit Rankings</button>
+        <Container maxW="container.xl" p={0}>
+            <VStack w="full" h="full" p={10} spacing={5} alignItems="flex-start"
+                divider={<StackDivider borderColor='gray.200' />}>
+                <VStack spacing={3} alignItems="flex-start">
+                    <Heading size="2xl">NBA Rankings</Heading>
+                    <Text>See How Your Rankings Stack up with the World</Text>
+                </VStack>
 
-            <hr />
+                <Flex direction="row">
+                    <Flex w='640px' direction="column" pr={5}>
+                        <Heading size="xl">Your Top 10</Heading>
+                        <Flex direction="row" p={2}>
+                            <Flex direction="column">
+                                <Icon size="lg" margin="2" as={RiNumber1} />
+                                <Icon size="lg" margin="2" as={RiNumber2} />
+                                <Icon size="lg" margin="2" as={RiNumber3} />
+                                <Icon size="lg" margin="2" as={RiNumber4} />
+                                <Icon size="lg" margin="2" as={RiNumber5} />
+                                <Icon size="lg" margin="2" as={RiNumber6} />
+                                <Icon size="lg" margin="2" as={RiNumber7} />
+                                <Icon size="lg" margin="2" as={RiNumber8} />
+                                <Icon size="lg" margin="2" as={RiNumber9} />
+                                <Flex my="2" direction="row">
+                                    <Icon size="lg" as={RiNumber1} />
+                                    <Icon mr="2" size="lg" as={RiNumber0} />
+                                </Flex>
+                            </Flex>
+                            <Flex w='600px' mt={1} direction="column">
+                                <RankList list={searchedPlayers.top10} onRemovePlayer={handleRemovePlayer}
+                                    onMoveUp={handleMoveUp} onMoveDown={handleMoveDown} />
+                            </Flex>
+                        </Flex>
+                        <button className={`${styles.button} ${styles.buttonLarge}`} 
+                            onClick={handleRankingSubmit}>Submit Rankings</button>
+                    </Flex>
+                    <Spacer/>
+                    <Flex w='640px' direction="column" pl={5} bg="gray.100">
+                        <Heading size="xl">Consensus Top 10</Heading>
+                        <Flex direction="row" p={2}>
+                            <Flex direction="column">
+                                <Icon size="lg" margin="2" as={RiNumber1} />
+                                <Icon size="lg" margin="2" as={RiNumber2} />
+                                <Icon size="lg" margin="2" as={RiNumber3} />
+                                <Icon size="lg" margin="2" as={RiNumber4} />
+                                <Icon size="lg" margin="2" as={RiNumber5} />
+                                <Icon size="lg" margin="2" as={RiNumber6} />
+                                <Icon size="lg" margin="2" as={RiNumber7} />
+                                <Icon size="lg" margin="2" as={RiNumber8} />
+                                <Icon size="lg" margin="2" as={RiNumber9} />
+                                <Flex my="2" direction="row">
+                                    <Icon size="lg" as={RiNumber1} />
+                                    <Icon mr="2" size="lg" as={RiNumber0} />
+                                </Flex>
+                            </Flex>
+                            <Flex w='600px' mt={1} direction="column">
+                                <ConsensusList />
+                            </Flex>
+                        </Flex>
+                        <Text as='i'>Ranking determined by aggregating all users' responses</Text>
+                    </Flex>
+                </Flex>
 
-            <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit}/>
+                <Flex w='1000px' direction="column" spacing={3}>
+                    <Heading size="xl">All Players</Heading>
+                    <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit}/>
+                    {searchedPlayers.isError && <p>Something went wrong ...</p>}
+                    {searchedPlayers.isLoading ? (<p>Loading ...</p>) : (<AllList list={searchedPlayers.data} onAddPlayer={handleAddPlayer} onSort={handleSort} />)}
+                </Flex>
 
-            <hr />
 
-            {searchedPlayers.isError && <p>Something went wrong ...</p>}
-            {searchedPlayers.isLoading ? (<p>Loading ...</p>) : (<List list={searchedPlayers.data} onAddPlayer={handleAddPlayer} onSort={handleSort}/>)}
-        </div>
+            </VStack>
+        </Container>
+
+        // <div>
+        //     <RankList list = {searchedPlayers.top10} onRemovePlayer={handleRemovePlayer}
+        //     onMoveUp={handleMoveUp} onMoveDown={handleMoveDown}/>
+
+        //     <button onClick={handleRankingSubmit}>Submit Rankings</button>
+
+        //     <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit}/>
+
+        //     <hr />
+
+        //     {searchedPlayers.isError && <p>Something went wrong ...</p>}
+        //     {searchedPlayers.isLoading ? (<p>Loading ...</p>) : (<List list={searchedPlayers.data} onAddPlayer={handleAddPlayer} onSort={handleSort}/>)}
+        // </div>
     );
 }
 
