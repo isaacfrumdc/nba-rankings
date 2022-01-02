@@ -79,3 +79,13 @@ app.post("/api/rankScore", (req, res) => {
         console.log(result)
     });
 });
+
+app.get("/api/get/consensus/top10", (req, res) => {
+    db.query("SELECT * FROM rank_scores WHERE top10_score IS NOT NULL ORDER BY top10_score LIMIT 10;",
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            }
+            res.send(result)
+        });
+});
