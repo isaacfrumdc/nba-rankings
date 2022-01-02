@@ -5,11 +5,11 @@ const RankList = ({ list, onRemovePlayer, onMoveUp, onMoveDown }) => {
     console.log("B: RankList");
     return (
         <div>
-            <div style={{ display: 'flex' }}>
+            {/* <div style={{ display: 'flex' }}>
                 <span style={{ width: '40%' }}>Player</span>
                 <span style={{ width: '30%' }}>Team</span>
                 <span style={{ width: '10%' }}>Position</span>
-            </div>
+            </div> */}
 
             {list.map(item => (
                 <Item key={item.person_id} item={item} listType='Rank'

@@ -1,8 +1,9 @@
 import React from 'react';
 import Item from './Item';
+import styles from './App.module.css';
 
-const List = React.memo(({ list, onAddPlayer, onRemovePlayer, onSort }) => {
-
+const AllList = React.memo(({ list, onAddPlayer, onRemovePlayer, onSort }) => {
+    console.log("B: List");
     return (
         <div>
             <div style={{ display: 'flex' }}>
@@ -22,7 +23,6 @@ const List = React.memo(({ list, onAddPlayer, onRemovePlayer, onSort }) => {
                     </button>
                 </span>
             </div>
-
             {list.map(item => (
                 <Item key={item.person_id} item={item} onAddPlayer={onAddPlayer} onRemovePlayer={onRemovePlayer} listType='All'/>
             ))}
@@ -30,4 +30,4 @@ const List = React.memo(({ list, onAddPlayer, onRemovePlayer, onSort }) => {
     );
 });
 
-export default List;
+export default AllList;
