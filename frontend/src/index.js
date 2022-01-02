@@ -2,11 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import IndexPage from './IndexPage';
 import reportWebVitals from './reportWebVitals';
+import { extendTheme, ChakraProvider } from '@chakra-ui/react';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ChakraProvider>
+      <App />
+      </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
