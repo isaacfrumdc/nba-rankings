@@ -81,11 +81,12 @@ app.post("/api/rankScore", (req, res) => {
 });
 
 app.get("/api/get/consensus/top10", (req, res) => {
-    db.query("SELECT * FROM rank_scores WHERE top10_score IS NOT NULL ORDER BY top10_score LIMIT 10;",
+    db.query("SELECT * FROM player_bios INNER JOIN rank_scores ON player_bios.player_slug = rank_scores.player_slug WHERE top10_score IS NOT NULL ORDER BY top10_score LIMIT 10;",
         (err, result) => {
             if (err) {
                 console.log(err)
             }
+            console.log(result)
             res.send(result)
         });
 });

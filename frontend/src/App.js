@@ -7,17 +7,28 @@ import playersReducer from './PlayersReducer';
 import RankList from './RankList';
 import { Container, VStack, Flex, Heading, Text, StackDivider, Spacer, Icon } from '@chakra-ui/react';
 import styles from './App.module.css';
-import { RiNumber1, RiNumber2, RiNumber3, RiNumber4, RiNumber5, RiNumber6, RiNumber7, RiNumber8, RiNumber9, RiNumber0 } from 'react-icons/ri';
 import ConsensusList from './ConsensusList';
 import NumberGroup from './NumberGroup';
 
-
 const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
+const API_CONSENSUS = "/consensus/top10";
 //const API_RANK = "http://localhost:7000/api/rank/";
-let arr10 = [];
+let consensus = [];
+const getConsensus = () => {
+    console.log("get consensus");
+    axios.get(`${API_BASE}${API_CONSENSUS}`)
+    .then((response) => {
+        consensus = response.data;
+    })
+    .catch(() => {
+        console.log("error: getConsensus");
+    });
+};
 
 const App = () => {
+
+    getConsensus();
 
     const [searchUrl, setSearchUrl] = React.useState(`${API_BASE}`);
     const [searchTerm, setSearchTerm] = React.useState("");
@@ -170,7 +181,7 @@ const App = () => {
                         <Flex direction="row" p={2}>
                             <NumberGroup/>
                             <Flex w='600px' mt={1} direction="column">
-                                <ConsensusList />
+                                <ConsensusList list={consensus}/>
                             </Flex>
                         </Flex>
                         <Text as='i'>Ranking determined by aggregating all users' responses</Text>
