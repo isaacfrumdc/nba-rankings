@@ -28,7 +28,7 @@ const playersReducer = (state, action) => {
             };
         case 'ADD_TO_RANKING':
             const list = state.top10;
-            const player = action.payload.player;
+            const player = action.payload;
             console.log("player:"+player);
             let alreadyAdded = false;
             for (let i = 0; i < list.length; i++) {
@@ -37,6 +37,7 @@ const playersReducer = (state, action) => {
                 }
             }
             if (list.length > 9 || alreadyAdded) {
+                console.log("already added or full");
                 return {
                     ...state,
                     isLoading: false,
