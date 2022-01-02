@@ -42,6 +42,7 @@ app.post("/api/rank/top10", (req, res) => {
 
     const userID = req.body.userID;
     const top10 = req.body.top10_list;
+    console.log("add");
     db.query("INSERT INTO top_10 (user_id, top10_list) VALUES (?,?)", 
         [userID, top10],
         (err, result) => {
@@ -50,4 +51,31 @@ app.post("/api/rank/top10", (req, res) => {
             }
             console.log(result)
         });
+});
+
+app.get("/api/get/allTop10" , (req, res) => {
+    console.log("HERE2");
+    db.query("SELECT * FROM top_10", (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        res.send(result)
+    });
+});
+
+app.post("/api/rankScore", (req, res) => {
+    console.log("HERE3");
+
+    const player_slug = req.body.slug;
+    console.log(player_slug);
+    const score = req.body.score;
+    console.log(score);
+    db.query("UPDATE rank_scores SET top10_score = ? WHERE player_slug = ?",
+    [score, player_slug],
+    (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        console.log(result)
+    });
 });
