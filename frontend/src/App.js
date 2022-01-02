@@ -9,6 +9,7 @@ import { Container, VStack, Flex, Heading, Text, StackDivider, Spacer, Icon } fr
 import styles from './App.module.css';
 import { RiNumber1, RiNumber2, RiNumber3, RiNumber4, RiNumber5, RiNumber6, RiNumber7, RiNumber8, RiNumber9, RiNumber0 } from 'react-icons/ri';
 import ConsensusList from './ConsensusList';
+import NumberGroup from './NumberGroup';
 
 
 const API_BASE = "http://localhost:7000/api/get";
@@ -154,21 +155,7 @@ const App = () => {
                     <Flex w='640px' direction="column" pr={5}>
                         <Heading size="xl">Your Top 10</Heading>
                         <Flex direction="row" p={2}>
-                            <Flex direction="column">
-                                <Icon size="lg" margin="2" as={RiNumber1} />
-                                <Icon size="lg" margin="2" as={RiNumber2} />
-                                <Icon size="lg" margin="2" as={RiNumber3} />
-                                <Icon size="lg" margin="2" as={RiNumber4} />
-                                <Icon size="lg" margin="2" as={RiNumber5} />
-                                <Icon size="lg" margin="2" as={RiNumber6} />
-                                <Icon size="lg" margin="2" as={RiNumber7} />
-                                <Icon size="lg" margin="2" as={RiNumber8} />
-                                <Icon size="lg" margin="2" as={RiNumber9} />
-                                <Flex my="2" direction="row">
-                                    <Icon size="lg" as={RiNumber1} />
-                                    <Icon mr="2" size="lg" as={RiNumber0} />
-                                </Flex>
-                            </Flex>
+                            <NumberGroup />
                             <Flex w='600px' mt={1} direction="column">
                                 <RankList list={searchedPlayers.top10} onRemovePlayer={handleRemovePlayer}
                                     onMoveUp={handleMoveUp} onMoveDown={handleMoveDown} />
@@ -181,21 +168,7 @@ const App = () => {
                     <Flex w='640px' direction="column" pl={5} bg="gray.100">
                         <Heading size="xl">Consensus Top 10</Heading>
                         <Flex direction="row" p={2}>
-                            <Flex direction="column">
-                                <Icon size="lg" margin="2" as={RiNumber1} />
-                                <Icon size="lg" margin="2" as={RiNumber2} />
-                                <Icon size="lg" margin="2" as={RiNumber3} />
-                                <Icon size="lg" margin="2" as={RiNumber4} />
-                                <Icon size="lg" margin="2" as={RiNumber5} />
-                                <Icon size="lg" margin="2" as={RiNumber6} />
-                                <Icon size="lg" margin="2" as={RiNumber7} />
-                                <Icon size="lg" margin="2" as={RiNumber8} />
-                                <Icon size="lg" margin="2" as={RiNumber9} />
-                                <Flex my="2" direction="row">
-                                    <Icon size="lg" as={RiNumber1} />
-                                    <Icon mr="2" size="lg" as={RiNumber0} />
-                                </Flex>
-                            </Flex>
+                            <NumberGroup/>
                             <Flex w='600px' mt={1} direction="column">
                                 <ConsensusList />
                             </Flex>
