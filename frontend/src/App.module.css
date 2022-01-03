@@ -40,6 +40,16 @@
   
     transition: all 0.1s ease-in;
   }
+
+  .button_dis {
+    background: transparent;
+    border: 1px solid #999999;
+    padding: 5px;
+    cursor: pointer;
+    color: #999999;
+  
+    transition: all 0.1s ease-in;
+  }
   
   .button:hover {
     background: #171212;

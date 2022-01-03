@@ -5,7 +5,7 @@ import SearchForm from './SearchForm';
 import SORTS from './SORTS';
 import playersReducer from './PlayersReducer';
 import RankList from './RankList';
-import { Container, VStack, Flex, Heading, Text, StackDivider, Spacer, Icon } from '@chakra-ui/react';
+import { Container, VStack, Flex, Heading, Text, StackDivider, Spacer } from '@chakra-ui/react';
 import styles from './App.module.css';
 import ConsensusList from './ConsensusList';
 import NumberGroup from './NumberGroup';
@@ -14,29 +14,28 @@ const API_BASE = "http://localhost:7000/api/get";
 const API_SEARCH = "/getFromName";
 const API_CONSENSUS = "/consensus/top10";
 //const API_RANK = "http://localhost:7000/api/rank/";
-let consensus = [];
-const getConsensus = () => {
-    console.log("get consensus");
-    axios.get(`${API_BASE}${API_CONSENSUS}`)
-    .then((response) => {
-        consensus = response.data;
-    })
-    .catch(() => {
-        console.log("error: getConsensus");
-    });
-};
 
 const App = () => {
-
-    getConsensus();
 
     const [searchUrl, setSearchUrl] = React.useState(`${API_BASE}`);
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchedPlayers, dispatchPlayers] = React.useReducer(
         playersReducer,
-        { data: [], top10: [], isLoading: false, isError: false }
+        { data: [], top10: [], isLoading: false, isError: false, disableSubmit: false }
     );
     const [sort, setSort] = React.useState({ sortKey: 'NONE', isReverse: false });
+    const [consensus10, setConsensus10] = React.useState([]);
+
+    const getConsensus = () => {
+        console.log("get consensus");
+        axios.get(`${API_BASE}${API_CONSENSUS}`)
+        .then((response) => {
+            setConsensus10(response.data);
+        })
+        .catch(() => {
+            console.log("error: getConsensus");
+        });
+    };
 
     const handleSort = React.useCallback(key => {
         const isReverse = sort.sortKey === key && !sort.isReverse;
@@ -93,10 +92,14 @@ const App = () => {
         dispatchPlayers({ type: 'UPDATE_RANKING', payload: arr10, });
     }, []);
 
+    const compareArr = (a, b) => {
+        a.every((v,i) => v === b[i]);
+    }
+
     const handleRankingSubmit = event => {
         let arr10 = searchedPlayers.top10;
         if (arr10.length !== 10) {
-            console.log("exit");
+            console.log("return: list full");
             return;
         }
         let submitArr = [];
@@ -108,6 +111,8 @@ const App = () => {
             user_id: '1',
             top10_list: JSON.stringify(submitArr),
         });
+
+        getConsensus();
 
         console.log("submit");
         event.preventDefault();
@@ -172,8 +177,12 @@ const App = () => {
                                     onMoveUp={handleMoveUp} onMoveDown={handleMoveDown} />
                             </Flex>
                         </Flex>
-                        <button className={`${styles.button} ${styles.buttonLarge}`} 
-                            onClick={handleRankingSubmit}>Submit Rankings</button>
+                        {searchedPlayers.top10.length < 10 ?
+                            (<button className={`${styles.button_dis} ${styles.buttonLarge}`}
+                                disabled>Submit Rankings</button>)
+                            : (<button className={`${styles.button} ${styles.buttonLarge}`}
+                                onClick={handleRankingSubmit}>Submit Rankings</button>)} 
+
                     </Flex>
                     <Spacer/>
                     <Flex w='640px' direction="column" pl={5} bg="gray.100">
@@ -181,7 +190,7 @@ const App = () => {
                         <Flex direction="row" p={2}>
                             <NumberGroup/>
                             <Flex w='600px' mt={1} direction="column">
-                                <ConsensusList list={consensus}/>
+                                <ConsensusList list={consensus10}/>
                             </Flex>
                         </Flex>
                         <Text as='i'>Ranking determined by aggregating all users' responses</Text>
