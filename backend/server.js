@@ -1,6 +1,7 @@
 const express = require('express')
 const db = require('./config/db')
 const cors = require('cors')
+const computeRankScores = require('./consensus_algo.js')
 
 const app = express();
 const PORT = 7000;
@@ -43,7 +44,7 @@ app.post("/api/rank/top10", (req, res) => {
     const userID = req.body.userID;
     const top10 = req.body.top10_list;
     console.log("add");
-    db.query("INSERT INTO top_10 (user_id, top10_list) VALUES (?,?)", 
+    db.query("INSERT INTO top_10 (user_id, top10_list) VALUES (?,?)",
         [userID, top10],
         (err, result) => {
             if (err) {
@@ -51,6 +52,7 @@ app.post("/api/rank/top10", (req, res) => {
             }
             console.log(result)
         });
+    computeRankScores();
 });
 
 app.get("/api/get/allTop10" , (req, res) => {

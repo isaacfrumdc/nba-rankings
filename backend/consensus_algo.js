@@ -6,6 +6,7 @@ const API_SCORES = "/rankScore"
 
 
 const computeRankScores = () => {
+    console.log("compute");
     const map = new Map();
     axios.get(`${API_BASE}${API_RANKINGS}`)
         .then((response) => {
